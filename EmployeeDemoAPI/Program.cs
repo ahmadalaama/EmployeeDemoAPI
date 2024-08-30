@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Connection String For this APP
-builder.Services.AddDbContext<EmployeeDbContext>(option => 
+builder.Services.AddDbContext<EmployeeDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("EmployeeAPIDB")));
 
 var app = builder.Build();
