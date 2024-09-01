@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EmployeeDemoAPI.Model.Personnel
 {
-    [Table("Personnel.Employee")]
+    [Table("Employee",Schema = "Personnel")]
     public class Employee
     {
         [Required]
