@@ -2,6 +2,7 @@
 using EmployeeDemoAPI.Model.Personnel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeDemoAPI.Controllers
 {
@@ -33,8 +34,8 @@ namespace EmployeeDemoAPI.Controllers
             
         }
 
-        [HttpGet]
-        [Route("{id:long}")]
+        [HttpGet("{id:long}")]
+        //oute("{id:long}")]
         public IActionResult GetById([FromRoute] long id)
         {
             try
@@ -52,6 +53,45 @@ namespace EmployeeDemoAPI.Controllers
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        [HttpPost]
+        public IActionResult Add([FromBody] Employee employee)
+        {
+            try
+            {
+                dbContext.Employees.Add(employee);
+                dbContext.SaveChanges();
+                return CreatedAtAction(nameof(GetById), new { id = employee.EmployeeID },employee);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
+
+        [HttpPut("{id:long}")]
+        //[Route("{id:long}")]
+        public IActionResult Update([FromRoute] long id,[FromBody] Employee employee)
+        {
+            try
+            {
+                if (employee is null)
+                {
+                    return NotFound();
+                }
+                dbContext.Entry(employee).State = EntityState.Modified;
+                dbContext.SaveChanges();
+                return Ok(employee);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }
