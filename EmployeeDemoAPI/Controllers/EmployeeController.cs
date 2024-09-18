@@ -18,11 +18,11 @@ namespace EmployeeDemoAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                var employees = dbContext.Employees.ToList();
+                var employees = await dbContext.Employees.ToListAsync();
 
                 return Ok(employees);
             }
@@ -31,20 +31,16 @@ namespace EmployeeDemoAPI.Controllers
                 Console.WriteLine(e);
                 throw;
             }
-            
+
         }
 
         [HttpGet("{id:long}")]
         //oute("{id:long}")]
-        public IActionResult GetById([FromRoute] long id)
+        public async Task<IActionResult> GetById([FromRoute] long id)
         {
             try
             {
-                var employee = dbContext.Employees.Find(id);
-                if (employee is null)
-                {
-                    return NotFound();
-                }
+                var employee = await dbContext.Employees.FindAsync(id);
 
                 return Ok(employee);
             }
@@ -56,25 +52,25 @@ namespace EmployeeDemoAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] Employee employee)
+        public async Task<IActionResult> Add([FromBody] Employee employee)
         {
             try
             {
-                dbContext.Employees.Add(employee);
-                dbContext.SaveChanges();
-                return CreatedAtAction(nameof(GetById), new { id = employee.EmployeeID },employee);
+                await dbContext.Employees.AddAsync(employee);
+                await dbContext.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetById), new { id = employee.EmployeeID }, employee);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-            
+
         }
 
         [HttpPut("{id:long}")]
         //[Route("{id:long}")]
-        public IActionResult Update([FromRoute] long id,[FromBody] Employee employee)
+        public async Task<IActionResult> Update([FromRoute] long id, [FromBody] Employee employee)
         {
             try
             {
@@ -83,7 +79,7 @@ namespace EmployeeDemoAPI.Controllers
                     return NotFound();
                 }
                 dbContext.Entry(employee).State = EntityState.Modified;
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return Ok(employee);
             }
             catch (Exception e)
